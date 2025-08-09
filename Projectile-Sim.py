@@ -1,25 +1,33 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Parameters
-g = 9.81  # gravity (m/s^2)
-v0 = 50   # initial speed (m/s)
-angle = 45  # launch angle in degrees
-t_end = 10  # total simulation time in seconds
+# Get user inputs
+angle_deg = float(input("Enter the launch angle in degrees: "))
+v0 = float(input("Enter the initial velocity (m/s): "))
 
 # Convert angle to radians
-theta = np.radians(angle)
+theta = np.radians(angle_deg)
+
+# Parameters
+g = 9.81  # gravity (m/s^2)
+t_end = 30  # total simulation time in seconds
 
 # Time steps
 t = np.linspace(0, t_end, num=500)
 
-# Equations of motion (without air resistance)
-x = v0 * np.cos(theta) * t
-y = v0 * np.sin(theta) * t - 0.5 * g * t**2
+# Initialize arrays to store position
+x = np.zeros(len(t))
+y = np.zeros(len(t))
+
+# Calculate position at each time step
+for i in range(len(t)):
+    x[i] = v0 * np.cos(theta) * t[i]
+    y[i] = v0 * np.sin(theta) * t[i] - 0.5 * g * t[i]**2
 
 # Cut off where projectile hits the ground
-x = x[y >= 0]
-y = y[y >= 0]
+mask = y >= 0
+x = x[mask]
+y = y[mask]
 
 # Plot
 plt.plot(x, y)
@@ -28,3 +36,5 @@ plt.xlabel("Distance (m)")
 plt.ylabel("Height (m)")
 plt.grid()
 plt.show()
+
+
