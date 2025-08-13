@@ -5,15 +5,18 @@ import numpy as np
 angle_deg = float(input("Enter the launch angle in degrees: "))
 v0 = float(input("Enter the initial velocity (m/s): "))
 
-# Convert angle to radians
-theta = np.radians(angle_deg)
-
 # Parameters
 g = 9.81  # gravity (m/s^2)
-t_end = 30  # total simulation time in seconds
+theta = np.radians(angle_deg)
+
+#Physics calculations
+t_flight = (2 * v0 * np.sin(theta)) / g  # total time of flight
+height_max = (v0**2 * np.sin(theta)**2) / (2 * g)  # maximum height
+distance = (v0* np.cos(theta)) * t_flight  # horizontal distance
+
 
 # Time steps
-t = np.linspace(0, t_end, num=500)
+t = np.linspace(0, t_flight, num=500)
 
 # Initialize arrays to store position
 x = np.zeros(len(t))
@@ -24,10 +27,11 @@ for i in range(len(t)):
     x[i] = v0 * np.cos(theta) * t[i]
     y[i] = v0 * np.sin(theta) * t[i] - 0.5 * g * t[i]**2
 
-# Cut off where projectile hits the ground
-mask = y >= 0
-x = x[mask]
-y = y[mask]
+
+# Print results of things
+print("Time in air: {:.2f} seconds".format(t_flight))
+print("Distance traveled: {:.2f} meters".format(distance))
+print("Maximum height: {:.2f} meters".format(height_max))
 
 # Plot
 plt.plot(x, y)
