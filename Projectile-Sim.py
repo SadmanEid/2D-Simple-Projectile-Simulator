@@ -12,11 +12,14 @@ theta = np.radians(angle_deg)
 #Physics calculations
 t_flight = (2 * v0 * np.sin(theta)) / g  # total time of flight
 height_max = (v0**2 * np.sin(theta)**2) / (2 * g)  # maximum height
-distance = (v0* np.cos(theta)) * t_flight  # horizontal distance
+if np.isclose(theta, np.pi/2):  # check if angle is 90 degrees  # horizontal distance
+    distance = 0
+else:
+    distance = v0 * np.cos(theta) * t_flight
 
 
 # Time steps
-t = np.linspace(0, t_flight, num=500)
+t = np.linspace(0, t_flight, num=1000)
 
 # Initialize arrays to store position
 x = np.zeros(len(t))
@@ -24,8 +27,12 @@ y = np.zeros(len(t))
 
 # Calculate position at each time step
 for i in range(len(t)):
-    x[i] = v0 * np.cos(theta) * t[i]
+    if np.isclose(theta, np.pi/2):  # check if angle is 90 degrees
+        x[i] = 0
+    else:
+        x[i] = v0 * np.cos(theta) * t[i]
     y[i] = v0 * np.sin(theta) * t[i] - 0.5 * g * t[i]**2
+
 
 
 # Print results of things
