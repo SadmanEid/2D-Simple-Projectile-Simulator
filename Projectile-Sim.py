@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation
+
 
 # Get user inputs 
 angle_deg = float(input("Enter the launch angle in degrees: "))
@@ -18,7 +20,7 @@ else:
     distance = v0 * np.cos(theta) * t_flight
 
 # Time steps
-t = np.linspace(0, t_flight, num=1000)
+t = np.linspace(0, t_flight)
 
 # Initialize arrays to store position
 x = np.zeros(len(t))
@@ -38,10 +40,25 @@ print("Distance traveled: {:.2f} meters".format(distance))
 print("Maximum height: {:.2f} meters".format(height_max))
 
 # Plot
-plt.plot(x, y)
-plt.title("Simple Flight Trajectory")
-plt.xlabel("Distance (m)")
-plt.ylabel("Height (m)")
-plt.grid()
-plt.show()
+fig, ax = plt.subplots()
+ax.set_title("Simple Flight Trajectory")
+ax.set_xlabel("Distance (m)")
+ax.set_ylabel("Height (m)")
+ax.grid()
+line, = ax.plot([], [], lw=2)
 
+# Initialization and update functions for animation
+def init():
+    ax.set_xlim(0, distance * 1.1 if distance > 0 else 10)
+    ax.set_ylim(0, height_max * 1.2 if height_max > 0 else 10)
+    line.set_data([], [])
+    return line,
+
+def update(frame):
+    line.set_data(x[:frame], y[:frame])
+    return line,
+
+ani = FuncAnimation(fig, update, frames=len(t), init_func=init, blit=True, interval=20)
+
+# Show the animation
+plt.show()
