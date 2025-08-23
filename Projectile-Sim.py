@@ -31,14 +31,6 @@ for i, ti in enumerate(t):
     xi = v0 * np.cos(theta) * ti if not np.isclose(theta, np.pi/2) else 0
     yi = v0 * np.sin(theta) * ti - 0.5 * g * ti**2
     if yi < 0:
-# Interpolate to find more accurate landing point at y=0 instead of stopping at negative height
-        if i > 0:
-            x0, y0 = x[-1], y[-1]
-            x1, y1 = xi, yi
-            frac = -y0 / (y1 - y0)
-            x_ground = x0 + frac * (x1 - x0)
-            x.append(x_ground)
-            y.append(0)
         break
     x.append(xi)
     y.append(yi)
