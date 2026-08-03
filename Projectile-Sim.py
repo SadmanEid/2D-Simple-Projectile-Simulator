@@ -121,6 +121,28 @@ def animate_trajectory(trajectory_x: np.ndarray, trajectory_y: np.ndarray) -> No
     )
     plt.show()
 
+#Check if inputs are valid
+def get_valid_number(prompt_text: str, must_be_positive: bool = False) -> float:
+    """
+    Safely asks the user for a number and handles typos without crashing.
+    Loops until a valid float is provided.
+    """
+    while True:
+        try:
+            # Try to convert whatever the user typed into a float
+            user_input = input(prompt_text)
+            value = float(user_input)
+            
+            # Optional check to prevent negative mass/radius
+            if must_be_positive and value <= 0:
+                print("  -> Error: Please enter a number greater than zero.\n")
+                continue # Jumps back to the start of the while loop
+                
+            return value # If everything is good, return the number and exit the loop
+            
+        except ValueError:
+            # If float() fails (e.g.,  typed "five"), the code jumps here instead of crashing
+            print("  -> Error: That is not a valid number. Please try again.\n")
 
 #-----------------------------------------
 #The User Inputs and Simulation Execution
@@ -128,17 +150,21 @@ def animate_trajectory(trajectory_x: np.ndarray, trajectory_y: np.ndarray) -> No
 if __name__ == "__main__":
     print("--- Projectile Simulator ---")
     
-    # Collect inputs
-    launch_angle = float(input("Launch angle (degrees): "))
-    launch_velocity = float(input("Initial velocity (m/s): "))
-    projectile_mass = float(input("Mass (kg): "))
-    projectile_radius = float(input("Radius (m): "))
+    # Launch angle can technically be negative (shooting downward), so we leave the default
+    launch_angle = get_valid_number("Launch angle (degrees): ")
+    launch_velocity = get_valid_number("Initial velocity (m/s): ")
+    
+    # Mass and radius MUST be positive for the physics to make sense
+    projectile_mass = get_valid_number("Mass (kg): ", must_be_positive=True)
+    projectile_radius = get_valid_number("Radius (m): ", must_be_positive=True)
 
+    print("\nSimulating flight...")
+    
     # Execute simulation
     x_data, y_data, time_data = simulate_flight(launch_velocity, launch_angle, projectile_mass, projectile_radius)
 
     # Display console results
-    print(f"\nTime in air: {time_data[-1]:.2f} seconds")
+    print(f"Time in air: {time_data[-1]:.2f} seconds")
     print(f"Distance traveled: {x_data[-1]:.2f} meters")
     print(f"Maximum height: {max(y_data):.2f} meters")
 

@@ -1,1 +1,0 @@
-print(f"\nTime in air: {time_data[-1]:.2f} seconds")
